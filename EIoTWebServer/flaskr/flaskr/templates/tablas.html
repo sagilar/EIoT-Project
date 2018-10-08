@@ -1,0 +1,157 @@
+{% extends "layout.html" %}
+{% block title %}Registros{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">Tablas</li>
+      </ol>
+
+
+             <!-- Example DataTables Card-->
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fa fa-table"></i> <span id="tituloTabla">Tabla de Registros</span>
+            <div class="dropdown inline">
+              <button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonTabla" data-toggle="dropdown">Seleccionar tabla
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                  <li role="presentation" id="listaTablasReg"><a class="dropdown-item linkddmenu" href="#">Registros</a></li>
+                  <li role="presentation" id="listaTablasRef"><a class="dropdown-item linkddmenu" href="#">Refrigeradores</a></li>
+                  <li role="presentation" id="listaTablasEiot"><a class="dropdown-item linkddmenu" href="#">EIoT</a></li>
+                  <li role="presentation" class="divider"></li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" id="divTablaRegistros">
+                <table class="table table-bordered table-display" id="dataTableReg" width="100%" cellspacing="0">
+
+                  <thead>
+                    <tr>
+                      <th>No. Registro</th>
+                      <th>Valor</th>
+                      <th>Fecha</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>No. Registro</th>
+                      <th>Valor</th>
+                      <th>Fecha</th>
+                    </tr>
+                  </tfoot>
+
+
+
+                  <tbody>
+                   {% for item in tablaRegistros %}
+                   <tr>
+                     <td class="c1">{{item[0]}}</td>
+                     <td class="c2">{{item[1]}}</td>
+                     <td class="c3">{{item[2]}}</td>
+                   </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+             </div>
+             <div class="table-responsive hidden" id="divTablaRefrigeradores">
+              <table class="table table-bordered table-display" id="dataTableRef" width="100%" cellspacing="0">
+
+                <thead>
+                  <tr>
+                    <th>No. Registro</th>
+                    <th>ID Refrigerador</th>
+                    <th>Variable</th>
+                    <th>Valor</th>
+                    <th>Fecha</th>
+
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>No. Registro</th>
+                    <th>ID Refrigerador</th>
+                    <th>Variable</th>
+                    <th>Valor</th>
+                    <th>Fecha</th>
+                  </tr>
+                </tfoot>
+
+
+
+                <tbody>
+                 {% for item in tablaRefrigeradores %}
+                 <tr>
+                   <td class="c1">{{item[0]}}</td>
+                   <td class="c2">{{item[1]}}</td>
+                   <td class="c3">{{item[2]}}</td>
+                   <td class="c2">{{item[3]}}</td>
+                   <td class="c3">{{item[4]}}</td>
+                 </tr>
+                 {% endfor %}
+               </tbody>
+             </table>
+           </div>
+           <div class="table-responsive hidden" id="divTablaEiot">
+            <table class="table table-bordered table-display" id="dataTableEiot" width="100%" cellspacing="0">
+
+              <thead>
+                <tr>
+                  <th>No. Registro</th>
+                  <th>ID Dispositivo</th>
+                  <th>Variable</th>
+                  <th>Valor</th>
+                  <th>Fecha</th>
+
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>No. Registro</th>
+                  <th>ID Dispositivo</th>
+                  <th>Variable</th>
+                  <th>Valor</th>
+                  <th>Fecha</th>
+                </tr>
+              </tfoot>
+
+
+              
+              <tbody>
+               {% for item in tablaEIoT %}
+               <tr>
+                 <td class="c1">{{item[0]}}</td>
+                 <td class="c2">{{item[1]}}</td>
+                 <td class="c3">{{item[2]}}</td>
+                 <td class="c2">{{item[3]}}</td>
+                 <td class="c3">{{item[4]}}</td>
+               </tr>
+               {% endfor %}
+             </tbody>
+           </table>
+         </div>
+       </div>
+     </div>
+     <div class="card-footer small text-muted">Actualizado {{updateTime}}</div>
+
+{% endblock %}
+
+{% block scripts %}
+  
+
+ <script type="text/javascript" language="javascript" class="init">
+
+  $(document).ready(function() {
+    $('table.table-display').dataTable();
+  } );
+
+</script>
+
+{% endblock %}

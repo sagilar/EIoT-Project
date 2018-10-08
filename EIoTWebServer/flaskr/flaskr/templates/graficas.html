@@ -1,0 +1,237 @@
+{% extends "layout.html" %}
+{% block title %}Gráficas{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+	<li class="breadcrumb-item">
+		<a href="#">Dashboard</a>
+	</li>
+	<li class="breadcrumb-item active">Gráficas</li>
+</ol>
+
+<!-- Area Chart Example-->
+<div class="card mb-3">
+	<div class="card-header">
+		<i class="fa fa-area-chart"></i> <span id="tituloGrafica">Gráfica Registros</span>
+
+		<div class="dropdown inline">
+			<button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonGraficas" data-toggle="dropdown">Seleccionar gráfica
+				<span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+					<li role="presentation" id="listaGraficasReg"><a class="dropdown-item linkddmenu" href="#">Registros</a></li>
+					<li role="presentation" id="listaGraficasRef"><a class="dropdown-item linkddmenu" href="#">Refrigeradores</a></li>
+					<li role="presentation" id="listaGraficasEiot"><a class="dropdown-item linkddmenu" href="#">EIoT</a></li>
+					<li role="presentation" class="divider"></li>
+				</ul>
+			</div>
+
+
+
+			<br>
+
+			<div class="row" id="seccionGrafEiot">
+				<div class="dropdown col-4" id="menuGrafEiot">
+					<button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonDispEiot" data-toggle="dropdown">Seleccionar dispositivo
+						<span class="caret"></span></button>
+						<ul class="dropdown-menu" id="liDispEiot" role="menu" aria-labelledby="menu1">
+           <!--  {% for key, value in dictEiot.items() %}
+          <li role="presentation" id="ListaGraficaEiot{{key}}"><a class="dropdown-item linkddmenu" href="#">{{key}}</a></li>
+          {% endfor %} -->
+          <li role="presentation" class="divider"></li>
+
+      </ul>
+  </div>
+
+  <div class="dropdown col-6 inline" id="menuGrafVarEiot">
+  	<button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonVarEiot" data-toggle="dropdown">Variable EIoT
+  		<span class="caret"></span></button>
+  		<ul class="dropdown-menu" id="liVarDispEiot" role="menu" aria-labelledby="menu1">
+            <!-- {% for key, value in dictEiot.items() %}
+          <li role="presentation" id="listaGrafVarEiot{{value}}"><a class="dropdown-item linkddmenu" href="#">{{value}}</a></li>
+          {% endfor %} -->
+          <li role="presentation" class="divider"></li>
+
+      </ul>
+  </div>
+
+</div>
+
+<div class="row" id="seccionGrafRefrig">
+	<div class="dropdown col-4" id="menuGrafRefrig">
+		<button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonDispRefrig" data-toggle="dropdown">Seleccionar refrigerador
+			<span class="caret"></span></button>
+			<ul class="dropdown-menu" id="liDispRefrig" role="menu" aria-labelledby="menu1">
+            <!-- {% for key, value in dictRefrig.items() %}
+          <li role="presentation" id="ListaGraficaRefrig{{key}}"><a class="dropdown-item linkddmenu" href="#">{{key}}</a></li>
+          {% endfor %} -->
+          <li role="presentation" class="divider"></li>
+
+      </ul>
+  </div>
+
+  <div class="dropdown col-6 inline" id="menuGrafVarRefrig">
+  	<button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonVarRefrig" data-toggle="dropdown">Variable Refrigerador
+  		<span class="caret"></span></button>
+  		<ul class="dropdown-menu" id="liVarDispRefrig" role="menu" aria-labelledby="menu1">
+            <!-- {% for key, value in dictRefrig.items() %}
+          <li role="presentation" id="listaGrafVarRefrig{{value}}"><a class="dropdown-item linkddmenu" href="#">{{value}}</a></li>
+          {% endfor %} -->
+          <li role="presentation" class="divider"></li>
+
+      </ul>
+  </div>
+
+</div>
+
+</div>
+</div>
+<div class="card-body">
+	<div class="dropdown">
+		<button class="btn btn-default dropdown-toggle pull-right" type="button" id="botonCantidadGraficas" data-toggle="dropdown">Cantidad de entradas
+			<span class="caret"></span></button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+				<li role="presentation" id="cantidadEntradas5"><a class="dropdown-item linkddmenu" href="#">5</a></li>
+				<li role="presentation" id="cantidadEntradas10"><a class="dropdown-item linkddmenu" href="#">10</a></li>
+				<li role="presentation" id="cantidadEntradas20"><a class="dropdown-item linkddmenu" href="#">20</a></li>
+				<li role="presentation" id="cantidadEntradas50"><a class="dropdown-item linkddmenu" href="#">50</a></li>
+				<li role="presentation" id="cantidadEntradasTodas"><a class="dropdown-item linkddmenu" href="#">Todas</a></li>
+				<li role="presentation" class="divider"></li>
+			</ul>
+		</div>
+		<br>
+		<canvas id="myAreaChart" width="100%" height="30"></canvas>
+	</div>
+	<div class="card-footer small text-muted">Actualizado {{updateTime}}</div>
+
+
+</div>
+
+<div class="row">
+	<div class="col-lg-8">
+		<!-- Example Bar Chart Card-->
+		<div class="card mb-3">
+			<div class="card-header">
+				<i class="fa fa-bar-chart"></i> Gráfica de barras</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-8 my-auto">
+							<canvas id="myBarChart" width="100" height="50"></canvas>
+						</div>
+						<div class="col-sm-4 text-center my-auto">
+							<div class="h4 mb-0 text-primary">$573</div>
+							<div class="small text-muted">Precio energía</div>
+							<hr>
+							<div class="h4 mb-0 text-warning">$183</div>
+							<div class="small text-muted">Precio generación kWh</div>
+							<hr>
+							<div class="h4 mb-0 text-success">325.3 MW</div>
+							<div class="small text-muted">Generación disponible</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer small text-muted">Actualizado {{updateTime}}</div>
+			</div>
+		</div>
+
+
+		<!-- Example Pie Chart Card-->
+		<div class="col-lg-4">
+			<div class="card mb-3">
+				<div class="card-header">
+					<i class="fa fa-pie-chart"></i> Diagrama de pastel</div>
+					<div class="card-body">
+						<canvas id="myPieChart" width="100" height="100"></canvas>
+					</div>
+					<div class="card-footer small text-muted">Actualizado {{updateTime}}</div>
+				</div>
+			</div>
+			
+		</div>
+
+		{% endblock %}
+
+		{% block scripts %}
+		<script>
+			var etiq = [
+			{% for item in labels %}
+			"{{ item }}",
+			{% endfor %}
+			];
+
+			var datos = [
+			{% for item in values %}
+			"{{ item }}",
+			{% endfor %}
+			];
+
+			var dictionarioEiot=[];
+			var dictionarioRefrig=[];
+
+			{% for key,value in dictGrafEiot.items() %}
+			dictionarioEiot["{{ key }}"]={{ value|safe }};
+			{% endfor %}
+
+			{% for key,value in dictGrafRefrig.items() %}
+			dictionarioRefrig["{{ key }}"]={{ value|safe }};
+			{% endfor %}
+			
+			var listasRegistros=[etiq,datos];
+
+			cargarVariables(dictionarioEiot,dictionarioRefrig,listasRegistros);
+
+
+			loadLineChart(etiq,datos);	
+		</script>
+
+		<script>
+			var lifuncEiot=[];
+			var dispEiot = [
+			{% for key,values in dictEiot.items() %}
+			"{{ key }}",
+			{% endfor %}
+			];
+			for (var i=0;i<dispEiot.length;i++)
+			{
+				lifuncEiot[i]="ListaGraficaEiot" + dispEiot[i];
+			}
+			var varxDispEiot={};
+
+
+			{% for key in dictEiot.keys() %}
+			varxDispEiot.{{ key }}= [
+			{% for values in dictEiot.get(key) %}
+			"{{ values }}",
+			{% endfor %}
+			];
+			{% endfor %}
+
+			var lifuncRefrig=[];
+			var dispRefrig = [
+			{% for key,values in dictRefrig.items() %}
+			"{{ key }}",
+			{% endfor %}
+			];
+			for (var i=0;i<dispRefrig.length;i++)
+			{
+				lifuncRefrig[i]="ListaGraficaRefrig" + dispRefrig[i];
+			}
+			var varxDispRefrig={};
+
+			{% for key in dictRefrig.keys() %}
+			varxDispEiot.{{ key }}= [
+			{% for values in dictEiot.get(key) %}
+			"{{ values }}",
+			{% endfor %}
+			];
+			{% endfor %}
+			
+			organizarDDmenus(dispEiot,varxDispEiot,dispRefrig,varxDispRefrig);
+			asignarVarsListas(lifuncEiot,dispEiot,varxDispEiot,lifuncRefrig,dispRefrig,varxDispRefrig);
+
+			
+
+		</script>
+		{% endblock %}
