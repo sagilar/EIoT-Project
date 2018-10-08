@@ -31,5 +31,5 @@ The same content can be found in the mbed repositories:
 
 ## Remarks:
 The LoRa codes are embedded into STM DISCO-L072CZ-LRWAN1 end devices.  
-**Most of the code and interfaces are in Spanish. Please contact me for help**
+**Most of the code and interfaces are in Spanish. Please contact me for help.**
 
