@@ -22,15 +22,15 @@ This is a single python file, but needs the physical serial connection between b
 ##EIoT LoRa Gateway
 This folder contains the mbed code of the LoRa device which acts as the gateway in the LoRa network.
 Please refer to the SX1276GenericPingPong/GenericPingPong.cpp file to note the differences to the template (STM32 template).
-The same content can be found in the mbed repositories:
-- https://os.mbed.com/users/sagilar/code/EIoT_LoRa_node_1/
-- https://os.mbed.com/users/sagilar/code/EIoT_LoRa_node_2/
-- https://os.mbed.com/users/sagilar/code/EIoT_LoRa_node_3/
+The same content can be found in the mbed repository: https://os.mbed.com/users/sagilar/code/EIoT_LoRa_Gateway/
 
 ##EIoT LoRa nodes (1,2, and 3)
 The folders contain the mbed code of the LoRa devices which act as nodes in the LoRa network.
 Please refer to the SX1276GenericPingPong/GenericPingPong.cpp files to note the differences to the template (STM32 template).
-The same content can be found in the mbed repository: https://os.mbed.com/users/sagilar/code/EIoT_LoRa_Gateway/
+The same content can be found in the mbed repositories:
+- https://os.mbed.com/users/sagilar/code/EIoT_LoRa_node_1/
+- https://os.mbed.com/users/sagilar/code/EIoT_LoRa_node_2/
+- https://os.mbed.com/users/sagilar/code/EIoT_LoRa_node_3/
 
 ##Remarks:
 The LoRa codes are embedded into STM DISCO-L072CZ-LRWAN1 end devices.
