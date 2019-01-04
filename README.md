@@ -4,7 +4,7 @@ This project pretends to cover multiple electrical engineering applications in t
 
 
 ## Update 04/Jan/2019
-The Lorawan-v1-0-2-EIoT-1 folder contains a new development of the EIoT project complying LoRaWAN 1.0.2 specification using Mbed-OS.  
+The Lorawan-v1-0-2-EIoT-1 folder contains a new development of the EIoT project complying LoRaWAN 1.0.2 specification using Mbed-OS and all the LoRaWAN Mbed stack.  
 More details are described in the readme file of such folder.  
 
 ## EIoT Web Server
