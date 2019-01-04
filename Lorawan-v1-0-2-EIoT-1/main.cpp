@@ -57,7 +57,7 @@ uint8_t rx_buffer[255];
 /**
  * Context variables
  */
- 
+
 AnalogIn analog_value_current(A0);
 AnalogIn analog_value_temp_refrig(A2);
 AnalogIn analog_value_temp_freez(PA_5);
@@ -71,10 +71,10 @@ Timer timer;
 Thread thread_c(osPriorityNormal, 1 * 1024);
 //EventQueue current_queue(2*EVENTS_EVENT_SIZE);
 
-//Volt Refrigerator : 119.0 V, Volt tests: 108.5V
+//Volt Refrigerator : 119.5 V, Volt tests: 108.5V
 
-const float RMS_VOLTAGE = 119.5;
-const float SENS = 185.0;
+const float RMS_VOLTAGE = 119.5;    //AC RMS Voltage
+const float SENS = 185.0;   //Current Sensor Factor
 const float FS = 1000.0 * 1.1; //10% extra, compensación por procesamiento
 
 
@@ -155,91 +155,55 @@ static lorawan_app_callbacks_t callbacks;
 /**
  * Current calculation function - Callback
  */
- 
-void readCurrentSensor()
-{
-    current_sensor_value = analog_value_current.read();
-    iter_count++;
-}
- 
+
 void calculateCurrent()
 {
-    //int cont = 0;
-    //timer.start();
     while(true){
-    //time_t seconds = time(NULL);
-    float estimated_time = 0.0;
-    
-    
-    
-    //cont++;
-    temp_c.reset();
-    temp_c.start();
-    float vread = analog_value_current.read();
-    //float vread = current_sensor_value;
-    vread = vread * 3300.0;
-    float vfilt = gc*filter2o(vread, v_sub1,v_sub2, a0, a1, a2, b0, b1, b2); //The signal is filtered
-    iter_sum = iter_sum + pow(vfilt,2);
-    //iter_sum = iter_sum + pow(vread,2);
-    iter_count++;
-    temp_c.stop();
-    estimated_time = abs((1.0/FS)-temp_c.read());
-    //printf("estimated time=%f\n",estimated_time);
-    
-    
-    if (iter_count == (int)FS){
-        //float temp_pr = analog_value_temp_refrig.read();
-        //printf("%.3f\n",temp_pr);
-        float VrmsSensor = sqrt(iter_sum/iter_count);
-        inst_current = VrmsSensor/SENS;
-        if(mean_current != 0.0) {
-            mean_current = (mean_current + inst_current)/2.0;
-        } else {
-            mean_current = inst_current;
-        }
-        
-        inst_power = inst_current * RMS_VOLTAGE;
-
-        if(mean_power != 0.0) {
-            mean_power = (mean_power + inst_power)/2.0;
-
-        } else {
-            mean_power = inst_power;
-        }
-        
-        if(inst_power > max_power) {
-            max_power = inst_power;
-        }
-        //printf("Timestr = %s", ctime(&seconds));
-        
-        
-        iter_count = 0;
-        iter_sum = 0.0;
-        mean_current_static = mean_current;
-        mean_power_static = mean_power;
-        max_power_static = max_power;
-        mean_current = 0.0;
-        mean_power = 0.0;
-        max_power = 0.0;
-        inst_current = 0.0;
-        
-        //printf("current=%f\n",mean_current_static);
-        //printf("time=%f\n",timer.read());
+        float estimated_time = 0.0;
+        temp_c.reset();
+        temp_c.start();
+        float vread = analog_value_current.read();
+        vread = vread * 3300.0;
+        float vfilt = gc*filter2o(vread, v_sub1,v_sub2, a0, a1, a2, b0, b1, b2); //The signal is filtered
+        iter_sum = iter_sum + pow(vfilt,2);
+        iter_count++;
+        temp_c.stop();
+        estimated_time = abs((1.0/FS)-temp_c.read());
         //printf("estimated time=%f\n",estimated_time);
-        
+        if (iter_count == (int)FS){
+            float VrmsSensor = sqrt(iter_sum/iter_count);
+            inst_current = VrmsSensor/SENS;
+            if(mean_current != 0.0) {
+                mean_current = (mean_current + inst_current)/2.0;
+            } else {
+                mean_current = inst_current;
+            }
+            
+            inst_power = inst_current * RMS_VOLTAGE;
+
+            if(mean_power != 0.0) {
+                mean_power = (mean_power + inst_power)/2.0;
+
+            } else {
+                mean_power = inst_power;
+            }
+            
+            if(inst_power > max_power) {
+                max_power = inst_power;
+            }
+            iter_count = 0;
+            iter_sum = 0.0;
+            mean_current_static = mean_current;
+            mean_power_static = mean_power;
+            max_power_static = max_power;
+            mean_current = 0.0;
+            mean_power = 0.0;
+            max_power = 0.0;
+            inst_current = 0.0;
+        }
+        //wait((1.0/FS));
+        wait(estimated_time);
     }
-    
-    
-    //wait((1.0/FS));
-    wait(estimated_time);
-    
-    }
-    /*printf("contador=%d\n",cont);
-    timer.stop();
-    timer.reset();
-    cont = 0;
-    calculateCurrent();*/
-    
 }
 
 /**
@@ -251,17 +215,6 @@ int main (void)
     gc = gc * 1.25;
     //Period sampling iniciatilization
     thread_c.start(&calculateCurrent);
-    
-    
-    //thread_c.start(callback(&current_queue, &EventQueue::dispatch_forever));
-    //current_queue.call_every((1000.0/FS),readCurrentSensor);
-    //current_queue.call_every(200,calculateCurrent);
-    
-    //current_queue.call(calculateCurrent);
-    //current_queue.dispatch(1);
-    //tick_current.attach(current_queue.event(&calculateCurrent), (1.0/FS));
-    
-    //tick_current.attach(&calculateCurrent,(1.0/FS));
     // setup tracing
     setup_trace();
 
@@ -282,13 +235,13 @@ int main (void)
 
     // Set number of retries in case of CONFIRMED messages
     if (lorawan.set_confirmed_msg_retries(CONFIRMED_MSG_RETRY_COUNTER)
-                                          != LORAWAN_STATUS_OK) {
+      != LORAWAN_STATUS_OK) {
         printf("\r\n set_confirmed_msg_retries failed! \r\n\r\n");
-        return -1;
-    }
+    return -1;
+}
 
-    printf("\r\n CONFIRMED message retries : %d \r\n",
-           CONFIRMED_MSG_RETRY_COUNTER);
+printf("\r\n CONFIRMED message retries : %d \r\n",
+ CONFIRMED_MSG_RETRY_COUNTER);
     /*
     // Enable adaptive data rate
     if (lorawan.enable_adaptive_datarate() != LORAWAN_STATUS_OK) {
@@ -298,14 +251,14 @@ int main (void)
 
     printf("\r\n Adaptive data  rate (ADR) - Enabled \r\n");
     */
-    
-    // Disable adaptive data rate
-    if (lorawan.disable_adaptive_datarate() != LORAWAN_STATUS_OK) {
-        printf("\r\n disable_adaptive_datarate failed! \r\n");
-        return -1;
-    }
 
-    printf("\r\n Adaptive data  rate (ADR) - Disabled \r\n");
+    // Disable adaptive data rate
+if (lorawan.disable_adaptive_datarate() != LORAWAN_STATUS_OK) {
+    printf("\r\n disable_adaptive_datarate failed! \r\n");
+    return -1;
+}
+
+printf("\r\n Adaptive data  rate (ADR) - Disabled \r\n");
     /*
      *    LoRaWAN US or AU:
      *    
@@ -313,29 +266,30 @@ int main (void)
      *    1: SF =  9, BW = 125 kHz, BitRate =  1760 bps
      *    2: SF =  8, BW = 125 kHz, BitRate =  3125 bps
      *    3: SF =  7, BW = 125 kHz, BitRate =  5470 bps
+     *    See https://github.com/ARMmbed/mbed-os/blob/master/features/lorawan/lorastack/phy/LoRaPHYUS915.cpp
     
     */
-    uint8_t data_rate = DR_4;
-    lorawan.set_datarate(data_rate);
-    
-    printf("\r\n Data rate - %d \r\n",data_rate);
+uint8_t data_rate = DR_4;
+lorawan.set_datarate(data_rate);
 
-    retcode = lorawan.connect();
+printf("\r\n Data rate - %d \r\n",data_rate);
 
-    if (retcode == LORAWAN_STATUS_OK ||
-        retcode == LORAWAN_STATUS_CONNECT_IN_PROGRESS) {
-    } else {
-        printf("\r\n Connection error, code = %d \r\n", retcode);
-        return -1;
-    }
+retcode = lorawan.connect();
 
-    printf("\r\n Connection - In Progress ...\r\n");
+if (retcode == LORAWAN_STATUS_OK ||
+    retcode == LORAWAN_STATUS_CONNECT_IN_PROGRESS) {
+} else {
+    printf("\r\n Connection error, code = %d \r\n", retcode);
+    return -1;
+}
 
-    
+printf("\r\n Connection - In Progress ...\r\n");
+
+
     // make your event queue dispatching events forever
-    ev_queue.dispatch_forever();
+ev_queue.dispatch_forever();
 
-    return 0;
+return 0;
 }
 
 /**
@@ -354,14 +308,14 @@ static void send_message()
     printf("\r\n Sending: {m_c=%.2f,m_p=%.2f,mx_p=%.2f,t_r=%.2f,t_f=%.2f,d_st=%d} \r\n", m_cur,m_pow,mx_pow,t_ref,t_frz,dr_stt);
     
     packet_len = sprintf((char*) tx_buffer, "{m_c=%.2f,m_p=%.2f,mx_p=%.2f,t_r=%.2f,t_f=%.2f,d_st=%d}",
-                    m_cur,m_pow,mx_pow,t_ref,t_frz,dr_stt);
+        m_cur,m_pow,mx_pow,t_ref,t_frz,dr_stt);
 
     retcode = lorawan.send(MBED_CONF_LORA_APP_PORT, tx_buffer, packet_len,
-                           MSG_CONFIRMED_FLAG);
+     MSG_CONFIRMED_FLAG);
 
     if (retcode < 0) {
         retcode == LORAWAN_STATUS_WOULD_BLOCK ? printf("send - WOULD BLOCK\r\n")
-                : printf("\r\n send() - Error code %d \r\n", retcode);
+        : printf("\r\n send() - Error code %d \r\n", retcode);
 
         if (retcode == LORAWAN_STATUS_WOULD_BLOCK) {
             //retry in 3 seconds
@@ -383,8 +337,8 @@ static void receive_message()
 {
     int16_t retcode;
     retcode = lorawan.receive(MBED_CONF_LORA_APP_PORT, rx_buffer,
-                              sizeof(rx_buffer),
-                              MSG_CONFIRMED_FLAG|MSG_UNCONFIRMED_FLAG);
+      sizeof(rx_buffer),
+      MSG_CONFIRMED_FLAG|MSG_UNCONFIRMED_FLAG);
 
     if (retcode < 0) {
         printf("\r\n receive() - Error code %d \r\n", retcode);
@@ -405,13 +359,13 @@ static void receive_message()
 /* 
  * Functions
  */
- 
+
 
 
 float readMeanCurrent()
 {
-    
-    
+
+
     float ret_value = mean_current_static;
     return ret_value;
     
@@ -419,7 +373,7 @@ float readMeanCurrent()
 
 float readMeanPower()
 {
-    
+
     float ret_value = mean_power_static;
     return ret_value;
     
@@ -439,7 +393,6 @@ float readTemperatureRefrigerator()
     float temperature = meas_v * 100.0; // 10 mV /°C
     //printf("ref read=%.3f,volt=%.3f,temp=%.3f",meas_r,meas_v,temperature);
     return temperature;
-    //return (analog_value_temp_refrig.read() * 330.0);
 }
 float readTemperatureFreezer()
 {
@@ -448,22 +401,20 @@ float readTemperatureFreezer()
     float temperature = meas_v * 100.0; // 10 mV /°C
     //printf("frez read=%.2f,volt=%.2f,temp=%.2f",meas_r,meas_v,temperature);
     return temperature;
-    //return (analog_value_temp_freez.read() * 330.0);
 }
 
 bool readDoorState()
 {
     int door_state = door_in.read();
     //printf("\ndoorstate=%d\n",door_state);
-    
     return door_state;
 }
 
 double filter2o(double u, double &v1, double &v2, const double a0, const double a1, const double a2, const double b0, const double b1, const double b2)
 {
-    
+
     double v = b0*u-b1*v1-b2*v2;
-    double y = a0*v+a1*v1+a2*v2;    //Forma directa II
+    double y = a0*v+a1*v1+a2*v2;    //Direct Form II
     v2=v1;
     v1=v;
     return y;
@@ -477,59 +428,59 @@ static void lora_event_handler(lorawan_event_t event)
 {
     switch (event) {
         case CONNECTED:
-            printf("\r\n Connection - Successful \r\n");
-            led1 = 1;
-            if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
-                send_message();
-            } else {
-                ev_queue.call_every(TX_TIMER, send_message);
-            }
+        printf("\r\n Connection - Successful \r\n");
+        led1 = 1;
+        if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
+            send_message();
+        } else {
+            ev_queue.call_every(TX_TIMER, send_message);
+        }
 
-            break;
+        break;
         case DISCONNECTED:
-            led1 = 0;
-            ev_queue.break_dispatch();
-            printf("\r\n Disconnected Successfully \r\n");
-            break;
+        led1 = 0;
+        ev_queue.break_dispatch();
+        printf("\r\n Disconnected Successfully \r\n");
+        break;
         case TX_DONE:
-            led4 = 1;
-            printf("\r\n Message Sent to Network Server \r\n");
-            if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
-                send_message();
-            }
-            wait(0.3);
-            led4 = 0;
-            break;
+        led4 = 1;
+        printf("\r\n Message Sent to Network Server \r\n");
+        if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
+            send_message();
+        }
+        wait(0.3);
+        led4 = 0;
+        break;
         case TX_TIMEOUT:
         case TX_ERROR:
         case TX_CRYPTO_ERROR:
         case TX_SCHEDULING_ERROR:
-            printf("\r\n Transmission Error - EventCode = %d \r\n", event);
+        printf("\r\n Transmission Error - EventCode = %d \r\n", event);
             // try again
-            if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
-                send_message();
-            }
-            break;
+        if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
+            send_message();
+        }
+        break;
         case RX_DONE:
-            printf("\r\n Received message from Network Server \r\n");
-            receive_message();
-            break;
+        printf("\r\n Received message from Network Server \r\n");
+        receive_message();
+        break;
         case RX_TIMEOUT:
         case RX_ERROR:
-            printf("\r\n Error in reception - Code = %d \r\n", event);
-            break;
+        printf("\r\n Error in reception - Code = %d \r\n", event);
+        break;
         case JOIN_FAILURE:
-            led3 = 1;
-            printf("\r\n OTAA Failed - Check Keys \r\n");
-            break;
+        led3 = 1;
+        printf("\r\n OTAA Failed - Check Keys \r\n");
+        break;
         case UPLINK_REQUIRED:
-            printf("\r\n Uplink required by NS \r\n");
-            if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
-                send_message();
-            }
-            break;
+        printf("\r\n Uplink required by NS \r\n");
+        if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
+            send_message();
+        }
+        break;
         default:
-            MBED_ASSERT("Unknown Event");
+        MBED_ASSERT("Unknown Event");
     }
 }
 
