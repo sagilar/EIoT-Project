@@ -3,7 +3,7 @@ The Electrical Internet of Things (EIoT) project was an initiative of Codensa S.
 This project pretends to cover multiple electrical engineering applications in the electrical and power sector and subsequently, cover many automation applications of several disciplines.  
 
 
-## Update 04/01/2019
+## Update 04/Jan/2019
 The Lorawan-v1-0-2-EIoT-1 folder contains a new development of the EIoT project complying LoRaWAN 1.0.2 specification using Mbed-OS.  
 More details are described in the readme file of such folder.  
 
