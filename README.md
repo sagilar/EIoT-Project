@@ -3,7 +3,19 @@ The Electrical Internet of Things (EIoT) project was an initiative of Codensa S.
 This project pretends to cover multiple electrical engineering applications in the electrical and power sector and subsequently, cover many automation applications of several disciplines.  
 
 
+## Update 01/Mar/2019
+The LoRaWAN-v1-0-2-EIoT 2 folder contains the development of a LoRaWAN node which generates a random voltage value (directly applicable with a voltage input 0 - 3.3V). It uses the Mbed-OS and the LoRaWAN Mbed stack.  
+The LoRaWAN-v1-0-2-EIoT 3 folder contains the development of a LoRaWAN node that monitors electrical things including a fire detector sensor and an analogic output to convert the current 0 - 5 A to 0 - 3.3V. It uses the Mbed-OS and the LoRaWAN Mbed stack.  
+
+
+
 ## Update 04/Jan/2019
+The project was migrated to use the LoRaWAN standard. Currently the LoRaWAN version used is 1.0.2.  
+Possible network servers:
+- TheThingsNetwork: https://www.thethingsnetwork.org/
+- Loriot: https://www.loriot.io/
+- The one this project uses: LoRaServer (deployable locally in your machines) - https://www.loraserver.io/
+
 The Lorawan-v1-0-2-EIoT-1 folder contains a new development of the EIoT project complying LoRaWAN 1.0.2 specification using Mbed-OS and all the LoRaWAN Mbed stack.  
 More details are described in the readme file of such folder.  
 
