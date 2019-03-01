@@ -5,6 +5,9 @@ This project pretends to cover multiple electrical engineering applications in t
 
 ## Update 01/Mar/2019
 The LoRaWAN-v1-0-2-EIoT 2 folder contains the development of a LoRaWAN node which generates a random voltage value (directly applicable with a voltage input 0 - 3.3V). It uses the Mbed-OS and the LoRaWAN Mbed stack.  
+
+-----------------------------------------------------------------------------------  
+
 The LoRaWAN-v1-0-2-EIoT 3 folder contains the development of a LoRaWAN node that monitors electrical things including a fire detector sensor and an analogic output to convert the current 0 - 5 A to 0 - 3.3V. It uses the Mbed-OS and the LoRaWAN Mbed stack.  
 
 
