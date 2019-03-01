@@ -1,4 +1,4 @@
-# EIoT LoRaWAN 1.0.2 first development.
+# EIoT LoRaWAN 1.0.2 node 3 (current and fire monitoring with analogic output).
 It was extended from https://github.com/ARMmbed/mbed-os-example-lorawan.  
 
 ## Setup
