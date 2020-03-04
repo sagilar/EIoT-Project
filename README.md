@@ -1,6 +1,6 @@
 # EIoT-Project
 The Electrical Internet of Things (EIoT) project was an initiative of Codensa S.A E.S.P, a power distribution company located in Bogotá, Colombia, and The T&T research group from the Universidad Nacional de Colombia, located in Medellín, Colombia.  
-This project pretends to cover multiple electrical engineering applications in the electrical and power sector and subsequently, cover many automation applications of several disciplines.  
+This project intends to cover multiple electrical engineering applications in the electrical and power industry and subsequently, cover many automation applications of several disciplines.  
 
 
 ## Update 01/Mar/2019
@@ -12,7 +12,7 @@ The LoRaWAN-v1-0-2-EIoT 3 folder contains the development of a LoRaWAN node that
 
 
 
-## Update 04/Jan/2019
+## Update 04/Jan/2019 (LoRaWAN)
 The project was migrated to use the LoRaWAN standard. Currently the LoRaWAN version used is 1.0.2.  
 Possible network servers:
 - TheThingsNetwork: https://www.thethingsnetwork.org/
@@ -22,7 +22,9 @@ Possible network servers:
 The Lorawan-v1-0-2-EIoT-1 folder contains a new development of the EIoT project complying LoRaWAN 1.0.2 specification using Mbed-OS and all the LoRaWAN Mbed stack.  
 More details are described in the readme file of such folder.  
 
-## EIoT Web Server
+-------
+
+## EIoT Web Server (LoRa - non-LoRaWAN)
 This folder contains the source code of the EIoT Web Server.  
 The Web Server runs in Python using the framework Flask and the SQLite3 Database engine.  
 The GUI was designed over a Start Bootstrap open source template with some modifications.  
